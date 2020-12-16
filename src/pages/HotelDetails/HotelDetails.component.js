@@ -4,15 +4,15 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import MainContainer from './MainContainer/MainContainer.component';
 import SideBarMain from './SideBarMain/SideBarMain.component';
-import { API, MOCK, REVIEWAPI } from '../../config';
+import { MOCK, REVIEWAPI } from '../../config';
 import {
 	getTotalPrice,
 	getHotelReservation,
 } from '../../redux/hotels/hotels.actions';
-import WithHotelLoading from '../HotelList/HotelListMain/WithHotelLoading/LodingBackground.component';
+// import WithHotelLoading from '../HotelList/HotelListMain/WithHotelLoading/LodingBackground.component';
 
 function HotelDetails({ match, history, getTotalPrice, getHotelReservation }) {
-	const [loading, setLoading] = useState(true);
+	const [loading] = useState(true);
 
 	const [hotelDetailData, setHotelDetailData] = useState(null);
 	const [reviewData, setReviewData] = useState(null);
@@ -25,8 +25,10 @@ function HotelDetails({ match, history, getTotalPrice, getHotelReservation }) {
 	const [childCount, setChildCount] = useState(0);
 
 	const [roomCount, setRoomCount] = useState({
-		standard: { double: 0, twin: 0 },
-		delux: { double: 0, twin: 0 },
+		standardDouble: 0,
+		standardTwin: 0,
+		deluxDouble: 0,
+		deluxTwin: 0,
 		suite: 0,
 	});
 
@@ -34,30 +36,9 @@ function HotelDetails({ match, history, getTotalPrice, getHotelReservation }) {
 
 	const [averageRating, setAverageRating] = useState();
 
-	// useEffect(() => {
-	// 	// 호텔별 디테일 fetch
-	// 	fetch(MOCK)
-	// 		.then((res) => res.json())
-	// 		.then((res) => {
-	// 			setHotelDetailData(res);
-	// 			setOptionPrice(res.hotel_add_prices);
-	// 			setTotalPrice(
-	// 				new Intl.NumberFormat().format(res.hotel_detail.basic_price),
-	// 			);
-	// 			setBasicPrice(Number(res.hotel_detail.basic_price));
-	// 		});
-	// 	// 리뷰받는 fetch
-	// 	fetch(REVIEWAPI)
-	// 		.then((res) => res.json())
-	// 		.then((res) => setReviewData(res));
-	// }, []);
-
 	useEffect(() => {
-		// 호텔 디테일 fetch
-		setLoading(true);
-		fetch(`${API}/${match.params.id}`, {
-			// headers: { Authorization: token },
-		})
+		// 호텔별 디테일 fetch
+		fetch(MOCK)
 			.then((res) => res.json())
 			.then((res) => {
 				setHotelDetailData(res);
@@ -68,13 +49,34 @@ function HotelDetails({ match, history, getTotalPrice, getHotelReservation }) {
 				setBasicPrice(Number(res.hotel_detail.basic_price));
 			});
 		// 리뷰받는 fetch
-		fetch(`${REVIEWAPI}/${match.params.id}`)
+		fetch(REVIEWAPI)
 			.then((res) => res.json())
-			.then((res) => {
-				setReviewData(res);
-			})
-			.then(() => setLoading(false));
+			.then((res) => setReviewData(res));
 	}, []);
+
+	// useEffect(() => {
+	// 	// 호텔 디테일 fetch
+	// 	setLoading(true);
+	// 	fetch(`${API}/${match.params.id}`, {
+	// 		// headers: { Authorization: token },
+	// 	})
+	// 		.then((res) => res.json())
+	// 		.then((res) => {
+	// 			setHotelDetailData(res);
+	// 			setOptionPrice(res.hotel_add_prices);
+	// 			setTotalPrice(
+	// 				new Intl.NumberFormat().format(res.hotel_detail.basic_price),
+	// 			);
+	// 			setBasicPrice(Number(res.hotel_detail.basic_price));
+	// 		});
+	// 	// 리뷰받는 fetch
+	// 	fetch(`${REVIEWAPI}/${match.params.id}`)
+	// 		.then((res) => res.json())
+	// 		.then((res) => {
+	// 			setReviewData(res);
+	// 		})
+	// 		.then(() => setLoading(false));
+	// }, []);
 
 	const goToResult = async () => {
 		await getTotalPrice(Number(totalPrice.replace(',', '')));
@@ -88,8 +90,8 @@ function HotelDetails({ match, history, getTotalPrice, getHotelReservation }) {
 		const suitePrice = +optionPrice[4];
 		const totalPrice =
 			basicPrice * dates +
-			deluxDoublePrice * roomCount.delux.double +
-			deluxTwinPrice * roomCount.delux.twin +
+			deluxDoublePrice * roomCount.deluxDouble +
+			deluxTwinPrice * roomCount.deluxTwin +
 			suitePrice * roomCount.suite;
 		const formatter = new Intl.NumberFormat().format(totalPrice);
 		setTotalPrice(formatter);
@@ -107,62 +109,10 @@ function HotelDetails({ match, history, getTotalPrice, getHotelReservation }) {
 	const isIncreaseRoomCount = (increase, targetRoomCount, type) => {
 		if (!increase && targetRoomCount === 0) return;
 
-		if (type === 'standardDouble') {
+		if (type) {
 			increase
-				? setRoomCount({
-						...roomCount,
-						standard: {
-							...roomCount.standard,
-							double: roomCount.standard.double + 1,
-						},
-				  })
-				: setRoomCount({
-						...roomCount,
-						standard: {
-							...roomCount.standard,
-							double: roomCount.standard.double - 1,
-						},
-				  });
-		} else if (type === 'standardTwin') {
-			increase
-				? setRoomCount({
-						...roomCount,
-						standard: {
-							...roomCount.standard,
-							twin: roomCount.standard.twin + 1,
-						},
-				  })
-				: setRoomCount({
-						...roomCount,
-						standard: {
-							...roomCount.standard,
-							twin: roomCount.standard.twin - 1,
-						},
-				  });
-		} else if (type === 'deluxDouble') {
-			increase
-				? setRoomCount({
-						...roomCount,
-						delux: { ...roomCount.delux, double: roomCount.delux.double + 1 },
-				  })
-				: setRoomCount({
-						...roomCount,
-						delux: { ...roomCount.delux, double: roomCount.delux.double - 1 },
-				  });
-		} else if (type === 'deluxTwin') {
-			increase
-				? setRoomCount({
-						...roomCount,
-						delux: { ...roomCount.delux, twin: roomCount.delux.twin + 1 },
-				  })
-				: setRoomCount({
-						...roomCount,
-						delux: { ...roomCount.delux, twin: roomCount.delux.twin - 1 },
-				  });
-		} else {
-			increase
-				? setRoomCount({ ...roomCount, suite: roomCount.suite + 1 })
-				: setRoomCount({ ...roomCount, suite: roomCount.suite - 1 });
+				? setRoomCount({ ...roomCount, [type]: roomCount[type] + 1 })
+				: setRoomCount({ ...roomCount, [type]: roomCount[type] - 1 });
 		}
 	};
 
@@ -205,7 +155,7 @@ function HotelDetails({ match, history, getTotalPrice, getHotelReservation }) {
 
 	return (
 		<>
-			<WithHotelLoading loadingState={loading} />
+			{/* <WithHotelLoading loadingState={loading} /> */}
 			<section className="HotelDetails">
 				<div className="hello"></div>
 				<HoteldetailsContainer>

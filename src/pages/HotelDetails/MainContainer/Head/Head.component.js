@@ -10,10 +10,10 @@ function Head({ hotelDetailData, averageRating }) {
 
 	const handleStar = () => {
 		for (let i = 0; i < star; i++) {
-			starArr.push(<StarFull />);
+			starArr.push(<StarFull key={i} />);
 		}
 		for (let i = 0; i < 5 - star; i++) {
-			starArr.push(<StarEmpty />);
+			starArr.push(<StarEmpty key={i} />);
 		}
 		setStar([...starArr]);
 	};

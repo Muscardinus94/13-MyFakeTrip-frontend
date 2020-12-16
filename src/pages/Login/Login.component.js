@@ -1,10 +1,6 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-// eslint-disable-next-line prettier/prettier
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-// eslint-disable-next-line prettier/prettier
 import { Link, withRouter } from 'react-router-dom';
-// eslint-disable-next-line prettier/prettier
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
@@ -61,7 +57,6 @@ const Login = ({ getUserToken, history }) => {
 			.then((res) => res.json())
 			.then((result) => console.log('결과:', result));
 	};
-	// eslint-disable-next-line prettier/prettier
 	const { register, handleSubmit, errors } = useForm();
 	const onSubmit = (values) => {
 		console.log(values);

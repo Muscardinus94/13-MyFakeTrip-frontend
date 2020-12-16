@@ -5,22 +5,22 @@ function Rooms({ roomCount, isOptionBtn, countRoom }) {
 	const ROOMSCOUNT = [
 		{
 			title: '스탠다드 더블룸',
-			count: roomCount.standard.double,
+			count: roomCount.standardDouble,
 			type: 'standardDouble',
 		},
 		{
 			title: '스탠다드 트윈룸',
-			count: roomCount.standard.twin,
+			count: roomCount.standardTwin,
 			type: 'standardTwin',
 		},
 		{
 			title: '디럭스 더블룸',
-			count: roomCount.delux.double,
+			count: roomCount.deluxDouble,
 			type: 'deluxDouble',
 		},
 		{
 			title: '디럭스 트윈룸',
-			count: roomCount.delux.twin,
+			count: roomCount.deluxTwin,
 			type: 'deluxTwin',
 		},
 		{
